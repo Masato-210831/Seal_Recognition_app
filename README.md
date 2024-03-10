@@ -1,0 +1,3 @@
+Seal_Recognition_app
+
+記録や申請書等の押印枠を検知し、押印の有無を識別するWEBアプリ。
