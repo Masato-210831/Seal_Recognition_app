@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "fastapi_backend"
+version = "0.1.0"
+description = ""
+authors = ["masato-210831 <b86500b@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12.2"
+sqlalchemy = "^2.0.28"
+uvicorn = "^0.28.0"
+fastapi = "^0.110.0"
+python-multipart = "^0.0.9"
+aiofiles = "^23.2.1"
+jedi = "^0.19.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
