@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import torch
@@ -7,6 +8,8 @@ import torchvision
 import math
 from io import BytesIO
 import base64
+from aiofiles import open as async_open
+from pdf2image import convert_from_bytes
 
 
  # 実際にYOLOv5で予測し、結果を返す関数(前処理、後処理含む)
@@ -435,7 +438,6 @@ def letterbox(
   return padded_img, ratio, (dw, dh)
 
 
-
 def imgarrtobyte(imgarr):
     """
     画像配列データをクライアントにレスポンスするためにテキストベース変換を行う
@@ -459,3 +461,33 @@ def imgarrtobyte(imgarr):
     img_base64 = base64.b64encode(img_byte)  # Base64のASCII文字(バイト列)にして、安全に送信できる。
     img_str = img_base64.decode('utf-8') # Pythonで扱うため,文字列変換
     return img_str
+
+
+
+
+# POSTされた画像を保存する関数
+async def imgstore(files, imgs_store_path):
+    # ファイルの保存
+    for file in files:
+        # 画像ファイルとPDFファイルのみ受け付ける
+        if file.content_type not in ["image/jpeg", "image/png", "application/pdf"]:
+            raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, and PDF files are allowed.")
+        
+        if file.content_type == "application/pdf":
+            # PDFファイルを読み込む
+            pdf_bytes = await file.read()
+            
+            # PDFファイルを1ページずつ画像に変換
+            images = convert_from_bytes(pdf_bytes)
+            
+            # 画像を保存
+            for i, image in enumerate(images):
+                image_path = f'{imgs_store_path}/{file.filename[:-4]}_{i+1}.png'
+                image.save(image_path, 'PNG')
+        else:
+            # 画像ファイルを保存
+            file_path = f'{imgs_store_path}/{file.filename}'
+            async with async_open(file_path, 'wb') as f:
+                content = await file.read()
+                await f.write(content)
+                await f.close()
