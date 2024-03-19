@@ -1,10 +1,10 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 import os
 import shutil
 import glob
 from aiofiles import open as async_open
-from my_utils.functions import run, imgarrtobyte
+from my_utils.functions import run, imgarrtobyte, pdftoimg
 from os.path import basename
 import onnxruntime as ort
 
@@ -22,23 +22,19 @@ imgs_store_path = './img_store'
 async def create_upload_file(files: list[UploadFile]):
     
     if not files:
-        return {"message": "ファイルをアップロードしてください。"}
+       raise HTTPException(status_code=400, detail="ファイルをアップロードしてください")
     else:
         # img_storeフォルダがない場合、作成する
         os.makedirs(imgs_store_path, exist_ok=True)
         
         # ファイルの保存
-        for file in files:
-            file_path = f'{imgs_store_path}/{file.filename}'
-            
-            # ファイルの保存
-            async with async_open(file_path, 'wb') as f:
-                content = await file.read()
-                await f.write(content)
-                await f.close()
-                
+        await pdftoimg(files, imgs_store_path)
+        
+        response = {"filename": [file.filename for file in files]}
+        
+                    
         # 保存したファイル名を返信
-        return {"filename": [file.filename for file in files]}
+        return JSONResponse(content=response)
     
     
 #==================
@@ -47,12 +43,19 @@ async def create_upload_file(files: list[UploadFile]):
 @app.post("/predict/")
 # 画像フォルダのパス
 def predict():
+    # ファイルをアップロードしているかの確認
+    if not os.path.exists(imgs_store_path):
+       raise HTTPException(status_code=400, detail="ファイルをアップロードしてください")
+   
+    # ファイルのパスを取得 
     imgs_path = glob.glob(imgs_store_path + '/*')
+    imgs_path.sort() # globでは順番にファイルを取得しないのでソートする。
+    
     # 物体検知後の結果保存
     no_seal_detection = 0
     filename_folder = []
     imgs_holder = []
-
+    print("取得したパス：", imgs_path)
 
     # ==========
     # 推論

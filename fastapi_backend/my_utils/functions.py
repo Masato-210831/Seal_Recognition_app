@@ -157,7 +157,7 @@ def box_label (
     --------------
     img : (ndarray) cv2処理されたオリジナル画像のndarray配列。
                     Channelは(B, G, R)。
-    box : (tensor) リスケール画像のbboxの情報　[x1, y1, x2, y2]。
+    box : (tensor) リスケール画像のbboxの情報 [x1, y1, x2, y2]。
                    x1,y1はbboxの左上のx,y座標、x2, y2は右下のx,y座標を表す。
     label : (str) bboxに付与されるテキスト "bboxのクラス名 クラス確率(下2桁)"の文字列。
     color : (tuple | list-like) bboxの枠の色 (B, G, R)。
@@ -466,24 +466,44 @@ def imgarrtobyte(imgarr):
 
 
 # POSTされた画像を保存する関数
-async def imgstore(files, imgs_store_path):
-    # ファイルの保存
+async def pdftoimg(files, imgs_store_path):
+    """
+    POSTでアップロードされた画像・PDFファイルを指定されたディレクトリにjpg形式で保存する
+    PDFファイルは1ページごとに画像ファイルに変換される。
+
+    Parameters
+    --------------
+    Files : (list) POSTでアップロードされたUploadFileのリスト
+    imgs_store_path : (str) 画像を保存するディレクトリのパス
+
+    Return
+    -----------
+    None 
+    
+    """
+    
+    # UploadFileのリストから1つずつ処理する
     for file in files:
-        # 画像ファイルとPDFファイルのみ受け付ける
-        if file.content_type not in ["image/jpeg", "image/png", "application/pdf"]:
-            raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, and PDF files are allowed.")
         
+        # 保存するファイルの選別(jpeg, jpg, png, pdf)
+        if file.content_type not in ["image/jpeg", "image/png", "application/pdf"]:
+            raise HTTPException(status_code=400, detail="PEG, JPG, PNG, PDFファイルをアップロードしてください。")
+        
+        # PDFは画像ファイルに変換後、保存
         if file.content_type == "application/pdf":
             # PDFファイルを読み込む
             pdf_bytes = await file.read()
             
-            # PDFファイルを1ページずつ画像に変換
-            images = convert_from_bytes(pdf_bytes)
+            # byte形式のPDFを1ページごとPILオブジェクトに変換
+            image = convert_from_bytes(pdf_bytes)
+            
+            # アスペクト比を保ちつつ、1000のサイズにリサイズする
+            image[0].thumbnail(size=(1000, 1000))
             
             # 画像を保存
-            for i, image in enumerate(images):
-                image_path = f'{imgs_store_path}/{file.filename[:-4]}_{i+1}.png'
-                image.save(image_path, 'PNG')
+            for i, image in enumerate(image):
+                image_path = f'{imgs_store_path}/{file.filename[:-4]}_page_{i+1}.jpg'
+                image.save(image_path, 'JPEG')
         else:
             # 画像ファイルを保存
             file_path = f'{imgs_store_path}/{file.filename}'
