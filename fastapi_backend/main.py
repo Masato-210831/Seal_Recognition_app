@@ -3,8 +3,7 @@ from fastapi.responses import JSONResponse
 import os
 import shutil
 import glob
-from aiofiles import open as async_open
-from my_utils.functions import run, imgarrtobyte, pdftoimg
+from my_utils.functions import run, imgarrtobyte, img_save
 from os.path import basename
 import onnxruntime as ort
 
@@ -20,21 +19,24 @@ imgs_store_path = './img_store'
 @app.post("/uploadfile/")
 # async def create_upload_file(files: list[UploadFile] | None = None):
 async def create_upload_file(files: list[UploadFile]):
+
+    # img_storeフォルダがない場合、作成する
+    os.makedirs(imgs_store_path, exist_ok=True)
     
-    if not files:
-       raise HTTPException(status_code=400, detail="ファイルをアップロードしてください")
-    else:
-        # img_storeフォルダがない場合、作成する
-        os.makedirs(imgs_store_path, exist_ok=True)
+    for file in files:
+        
+      # 保存するファイルの選別(jpeg, jpg, png, pdf)
+        if file.content_type not in ["image/jpeg", "image/png", "application/pdf"]:
+            raise HTTPException(status_code=400, detail="JPEG, JPG, PNG, PDFファイルをアップロードしてください。")
         
         # ファイルの保存
-        await pdftoimg(files, imgs_store_path)
-        
-        response = {"filename": [file.filename for file in files]}
-        
-                    
-        # 保存したファイル名を返信
-        return JSONResponse(content=response)
+        await img_save(file, imgs_store_path)
+    
+    
+    response = {"filename": [file.filename for file in files]}
+                
+    # 保存したファイル名を返信
+    return JSONResponse(content=response)
     
     
 #==================
@@ -55,7 +57,6 @@ def predict():
     no_seal_detection = 0
     filename_folder = []
     imgs_holder = []
-    print("取得したパス：", imgs_path)
 
     # ==========
     # 推論

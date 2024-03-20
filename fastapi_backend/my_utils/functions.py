@@ -466,14 +466,14 @@ def imgarrtobyte(imgarr):
 
 
 # POSTされた画像を保存する関数
-async def pdftoimg(files, imgs_store_path):
+async def img_save(file, imgs_store_path):
     """
     POSTでアップロードされた画像・PDFファイルを指定されたディレクトリにjpg形式で保存する
     PDFファイルは1ページごとに画像ファイルに変換される。
 
     Parameters
     --------------
-    Files : (list) POSTでアップロードされたUploadFileのリスト
+    File : (UploadFile) POSTでアップロードされた画像のUploadFileオブジェクト
     imgs_store_path : (str) 画像を保存するディレクトリのパス
 
     Return
@@ -482,32 +482,34 @@ async def pdftoimg(files, imgs_store_path):
     
     """
     
-    # UploadFileのリストから1つずつ処理する
-    for file in files:
+    # PDFは画像ファイルに変換後、保存
+    if file.content_type == "application/pdf":
+        # PDFファイルを読み込む
+        pdf_bytes = await file.read()
         
-        # 保存するファイルの選別(jpeg, jpg, png, pdf)
-        if file.content_type not in ["image/jpeg", "image/png", "application/pdf"]:
-            raise HTTPException(status_code=400, detail="PEG, JPG, PNG, PDFファイルをアップロードしてください。")
+        # byte形式のPDFを1ページごとPILオブジェクトに変換
+        # 学習に使用したファイルは100x100 dpiなので合わせる
+        image = convert_from_bytes(pdf_bytes, dpi=100)
         
-        # PDFは画像ファイルに変換後、保存
-        if file.content_type == "application/pdf":
-            # PDFファイルを読み込む
-            pdf_bytes = await file.read()
+        # アスペクト比を保ちつつ、1000のサイズにリサイズする
+        image[0].thumbnail(size=(1000, 1000))
+        
+        # 画像を保存
+        for i, image in enumerate(image):
+            image_path = f'{imgs_store_path}/{file.filename[:-4]}_page_{i+1}.jpg'
+            image.save(image_path, 'JPEG')
+    else:
+        image_byte = await file.read()
+        
+        # PILオブジェクトに変換
+        image = Image.open(BytesIO(image_byte))
+        
+        # アスペクト比を保ちつつ、1000のサイズにリサイズする
+        image.thumbnail(size=(1000, 10000))
+        
+        # リサイズした画像の保存
+        file_path = f'{imgs_store_path}/{file.filename}'
+        
+        # PNGのようなRGBAをRGBに変換後、保存
+        image.convert('RGB').save(file_path, 'JPEG')
             
-            # byte形式のPDFを1ページごとPILオブジェクトに変換
-            image = convert_from_bytes(pdf_bytes)
-            
-            # アスペクト比を保ちつつ、1000のサイズにリサイズする
-            image[0].thumbnail(size=(1000, 1000))
-            
-            # 画像を保存
-            for i, image in enumerate(image):
-                image_path = f'{imgs_store_path}/{file.filename[:-4]}_page_{i+1}.jpg'
-                image.save(image_path, 'JPEG')
-        else:
-            # 画像ファイルを保存
-            file_path = f'{imgs_store_path}/{file.filename}'
-            async with async_open(file_path, 'wb') as f:
-                content = await file.read()
-                await f.write(content)
-                await f.close()
