@@ -3,10 +3,10 @@ import React, { useRef, useState, useMemo } from "react";
 const Home = () => {
   const inputRef = useRef(null);
   const [inputFiles, setInputFiles] = useState("");
-  console.log("現在のinputFileの中身は:", inputFiles);
+  console.log("現在のinputFileの中身は:", inputFiles[0]);
 
   const selectedFileArray = useMemo(() => {
-    return inputFiles ? [...Array.from(inputFiles)] : []; //???????????????????????
+    return inputFiles ? [...Array.from(inputFiles)] : [];
   }, [inputFiles]);
 
   const handleChange = (e) => {
@@ -16,8 +16,11 @@ const Home = () => {
       ...selectedFileArray,
       ...Array.from(e.target.files),
     ].filter(
-      (file, index, self) => // [...].filterで現在処理しているfile, index, array自体のself
-        self.findIndex((f) => f.name === file.name) === index // 重複を削除 -> 現在処理しているfileとindexが同じならTrueでfilterされない
+      (
+        file,
+        index,
+        self // [...].filterで現在処理しているfile, index, array自体のself
+      ) => self.findIndex((f) => f.name === file.name) === index // 重複を削除 -> 現在処理しているfileとindexが同じならTrueでfilterされない
     );
 
     const dt = new DataTransfer();
@@ -34,28 +37,11 @@ const Home = () => {
     setInputFiles(dt.files); // Reactのstateを更新
   };
 
-    // // ファイルが選択されたときの処理
-    // const onFileInputChange = (e) => {
-    //   console.log(e.target.files);
-
-    //   //useStateで保持
-    //   setInputFiles(e.target.files);
-    // };
-
-    // const fileUpload = () => {
-    //   inputRef.current.click();
-    // };
-
-    return (
+  return (
+    <div>
+      <h3>ファイルのアップロード</h3>
+      <input ref={inputRef} type="file" multiple onChange={handleChange} />
       <div>
-        <h3>ファイルのアップロード</h3>
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          onChange={handleChange}
-        />
-        <div>
         {selectedFileArray.map((file, index) => (
           <div
             key={file.name}
@@ -65,9 +51,9 @@ const Home = () => {
             <button onClick={() => handleDelete(index)}>削除</button>
           </div>
         ))}
-        </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 export default Home;
