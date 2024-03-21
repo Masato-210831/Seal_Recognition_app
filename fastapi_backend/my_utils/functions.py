@@ -505,7 +505,7 @@ async def img_save(file, imgs_store_path):
         image = Image.open(BytesIO(image_byte))
         
         # アスペクト比を保ちつつ、1000のサイズにリサイズする
-        image.thumbnail(size=(1000, 10000))
+        image.thumbnail(size=(1000, 1000))
         
         # リサイズした画像の保存
         file_path = f'{imgs_store_path}/{file.filename}'

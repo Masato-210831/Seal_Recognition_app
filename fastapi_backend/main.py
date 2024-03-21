@@ -6,9 +6,23 @@ import glob
 from my_utils.functions import run, imgarrtobyte, img_save
 from os.path import basename
 import onnxruntime as ort
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+# Cors対応
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # POSTされた画像の保存ディレクトリのパス
 imgs_store_path = './img_store'

@@ -1,9 +1,11 @@
 import React, { useRef, useState, useMemo } from "react";
+import { Box, Button } from "@mui/material";
+import ImgStoreBtn from '../elements/ImgStoreBtn'
 
 const Home = () => {
   const inputRef = useRef(null);
-  const [inputFiles, setInputFiles] = useState("");
-  console.log("現在のinputFileの中身は:", inputFiles[0]);
+  const [inputFiles, setInputFiles] = useState([]);
+  // console.log("現在のinputFileの中身は:", inputFiles[0]);
 
   const selectedFileArray = useMemo(() => {
     return inputFiles ? [...Array.from(inputFiles)] : [];
@@ -11,7 +13,7 @@ const Home = () => {
 
   const handleChange = (e) => {
     if (!e.target.files) return;
-    if (!inputRef.current?.files) return; //?.はオプショナルチェーン, ??はnull合体演算子
+    if (!inputRef.current?.files) return; //?.はオプショナルチェーン
     const newFileArray = [
       ...selectedFileArray,
       ...Array.from(e.target.files),
@@ -38,21 +40,26 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <>
       <h3>ファイルのアップロード</h3>
       <input ref={inputRef} type="file" multiple onChange={handleChange} />
-      <div>
+      <Box mb={3}>
         {selectedFileArray.map((file, index) => (
-          <div
-            key={file.name}
-            className="flex items-center justify-between gap-2"
-          >
+          <Box key={file.name} display="flex" gap={2} mt={1} mr={1}>
             <div>{file.name}</div>
             <button onClick={() => handleDelete(index)}>削除</button>
-          </div>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+
+      <Box gap={0.5} sx={{display:'flex', flexDirection:'column'}}>
+        {/* 画像をapiで保存するボタン */}
+        <ImgStoreBtn inputFiles={inputFiles} />
+        <Button variant="contained" color='warning' sx={{bgcolor: 'warning.main', width:300 }}>
+          未押印の検知開始
+        </Button>
+      </Box>
+    </>
   );
 };
 
