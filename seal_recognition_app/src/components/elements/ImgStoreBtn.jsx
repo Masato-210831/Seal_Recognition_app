@@ -1,15 +1,24 @@
-import React, { useState } from "react";
-import { Button, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import DetectionBtn from "./DetectionBtn";
+import { Button, Box, Typography } from "@mui/material";
 import axios from "axios";
 
 const ImgStoreBtn = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [resResult, setResResult] = useState("");
+
+  const files = props.inputFiles; // 送信する画像配列
+
+  useEffect(() => {
+    if (files.length === 0) {
+      setResResult("");
+    }
+  });
 
   // ボタンが押された時の挙動
   const pressbtn = () => {
-    const files = props.inputFiles; // 送信する画像配列
 
-    // アップロードファイルがからの場合
+    // アップロードファイルが空の場合
     if (files.length === 0) {
       setErrorMessage("ファイルをアップロードしてください");
       return;
@@ -17,9 +26,9 @@ const ImgStoreBtn = (props) => {
       setErrorMessage("");
     }
 
-    const post_url = "http://127.0.0.1:8000/uploadfile/ "; // POSTするURL
+    // POSTするURL
+    const post_url = "http://127.0.0.1:8000/uploadfile/ ";
 
-    console.log("ファイルの中身は", Object.values(files));
     // FormDataオブジェクトに追加
     const formData = new FormData();
     Object.values(files).forEach((file) => formData.append("files", file));
@@ -34,6 +43,7 @@ const ImgStoreBtn = (props) => {
       .then(function (response) {
         console.log("responseは", response.data);
         console.log("展開", [...response.data.filename]);
+        setResResult(response);
       })
       .catch(function (error) {
         console.log(error);
@@ -47,6 +57,14 @@ const ImgStoreBtn = (props) => {
 
   return (
     <>
+      {/* ファイルの保存完了時に表示 */}
+      {resResult && (
+        <Box>
+          <Typography>アップロードファイルの保存が完了しました。</Typography>
+          <Typography>物体検知可能です！！</Typography>
+        </Box>
+      )}
+
       {/* エラーの時だけ表示 */}
       {errorMessage && (
         <Typography color="error" variant="body1" sx={{ display: "block" }}>
@@ -63,6 +81,10 @@ const ImgStoreBtn = (props) => {
       >
         アップロードファイルの保存
       </Button>
+
+      {/* 物体検知ボタン */}
+      {/* {resResult && <DetectionBtn />} */} 
+      <DetectionBtn />
     </>
   );
 };

@@ -55,9 +55,6 @@ const Home = () => {
       <Box gap={0.5} sx={{display:'flex', flexDirection:'column'}}>
         {/* 画像をapiで保存するボタン */}
         <ImgStoreBtn inputFiles={inputFiles} />
-        <Button variant="contained" color='warning' sx={{bgcolor: 'warning.main', width:300 }}>
-          未押印の検知開始
-        </Button>
       </Box>
     </>
   );

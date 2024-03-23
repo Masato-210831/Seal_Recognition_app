@@ -28,6 +28,8 @@ def run(session, input_file):
     output : 以下の2つのパラメータを返す
              (int) : 検出した物体に未押印があれば1, 押印しかなければ0。
              (ndarray | None) 未押印があれば、bboxを追加した画像のndarray、押印しかなければNone。
+             (list | None) 未押印があれば、各bboxにおける押印、未押印のリスト、押印しかなければNone。
+             (list | None) 未押印があれば、各bboxにおける信頼スコアのリスト、押印しかなければNone。
     
     """
     # 以下はYOLOv5の値と学習モデルからの値
@@ -120,21 +122,26 @@ def run(session, input_file):
                     label = names if hide_conf else f"{names[cls_id]} {prob:.2f}"
         
                     # 最後にPILで処理されて,ChannelがRGBに変わっているので注意!!
+                    # 順々に検出したbboxの枠を作成しるのでinputのimg変数と格納する変数名を同じにする。
                     process_img = box_label(img = process_img, box = xyxy, label = label, color = color)
         
-                # POST用のPIL化(Byte変換に必要)のため、RGBに変換する。
+                # POSTのResponseのため、RGBに変換後、(C, H, W)に転置する。
                 output_img = cv2.cvtColor(process_img, cv2.COLOR_BGR2RGB)
+
+                # 各クラス情報と確率のリスト
+                cls_info = det[:, -2:].data.numpy()
+                classes = [ names[cls] for cls in cls_info[:, -1]]
+                cls_conf = cls_info[:, 0].tolist()
                 
     
         # 1とbbox付き画像のndarray配列を返す予定
-        # return後、ファイル名の取得も忘れずにする（おそらくforで回しているので）!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        return (1, output_img)
+        return (1, output_img, classes, cls_conf)
     
     else:
-        # --- 未押印なし -------------
         
-        # 1と出力する画像はないのでNoneを返す予定
-        return (0, None)
+        # --- 未押印なし -------------
+        # 1と出力する、それ以外は未押印と出力を合わせるのでNone
+        return (0, None, None, None)
 
 
 
@@ -389,7 +396,7 @@ def xywh2xyxy(x):
 def letterbox(
   img,
   new_shape=(640, 640),
-  color=(0, 0, 0),
+  color=(114, 114, 114),
   scaleup=True,
 ):
   """

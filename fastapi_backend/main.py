@@ -61,7 +61,7 @@ async def create_upload_file(files: list[UploadFile]):
 def predict():
     # ファイルをアップロードしているかの確認
     if not os.path.exists(imgs_store_path):
-       raise HTTPException(status_code=400, detail="ファイルをアップロードしてください")
+       raise HTTPException(status_code=400, detail="アップロードファイルの保存をしてください")
    
     # ファイルのパスを取得 
     imgs_path = glob.glob(imgs_store_path + '/*')
@@ -69,8 +69,10 @@ def predict():
     
     # 物体検知後の結果保存
     no_seal_detection = 0
-    filename_folder = []
+    filename_holder = []
     imgs_holder = []
+    cls_hodler = []
+    cls_conf_holder = []
 
     # ==========
     # 推論
@@ -81,9 +83,9 @@ def predict():
     for img_path in imgs_path:
         
         # 返り値:
-        # 未押印あり→ (1, RGB画像のndarray配列)
+        # 未押印あり→ (1, RGB画像のndarray配列, classのリスト, 信頼スコアリスト)
         # 押印のみ  → (0, None)
-        cls_id, no_seal_img = run(session, img_path)
+        cls_id, no_seal_img, classes, cls_conf = run(session, img_path)
         print(f"-----FileName:{basename(img_path[:-4])}---------")
         print('推論結果:', cls_id)
         
@@ -96,9 +98,14 @@ def predict():
             img_str = imgarrtobyte(no_seal_img)
             
             # Response用にファイル名、画像データの格納
+            #===
+            #後日→リスト処理する
+            #===
             filename = basename(img_path[:-4])
-            filename_folder.append(filename)
+            filename_holder.append(filename)
             imgs_holder.append(img_str)
+            cls_hodler.append(classes)
+            cls_conf_holder.append(cls_conf)
         else:
             continue
     
@@ -113,8 +120,10 @@ def predict():
     response = {
         'result': result,
         'no_seal_detection': no_seal_detection,
-        'no_seal_imgs_list':filename_folder,
-        'image_list': imgs_holder
+        'no_seal_imgs_list':filename_holder,
+        'classes': cls_hodler,
+        'cls_conf': cls_conf_holder,
+        'image_list': imgs_holder,
     }
     
     # 画像保存ディレクトリの削除
