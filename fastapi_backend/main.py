@@ -71,7 +71,7 @@ def predict():
     no_seal_detection = 0
     filename_holder = []
     imgs_holder = []
-    cls_hodler = []
+    cls_holder = []
     cls_conf_holder = []
 
     # ==========
@@ -104,7 +104,7 @@ def predict():
             filename = basename(img_path[:-4])
             filename_holder.append(filename)
             imgs_holder.append(img_str)
-            cls_hodler.append(classes)
+            cls_holder.append(classes)
             cls_conf_holder.append(cls_conf)
         else:
             continue
@@ -114,14 +114,13 @@ def predict():
     # ====================
     
     # 総合的結果
-    result = '未押印検出されませんでした。' if no_seal_detection == 0 else '未押印が検出されました。'
+    result = '未押印検出されませんでした。' if no_seal_detection == 0 else f'未押印が検出されました（合計：{no_seal_detection}ページ）。'
     
 
     response = {
         'result': result,
-        'no_seal_detection': no_seal_detection,
-        'no_seal_imgs_list':filename_holder,
-        'classes': cls_hodler,
+        'no_seal_imgs_names':filename_holder,
+        'classes': cls_holder,
         'cls_conf': cls_conf_holder,
         'image_list': imgs_holder,
     }

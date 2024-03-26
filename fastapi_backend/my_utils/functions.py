@@ -129,9 +129,9 @@ def run(session, input_file):
                 output_img = cv2.cvtColor(process_img, cv2.COLOR_BGR2RGB)
 
                 # 各クラス情報と確率のリスト
-                cls_info = det[:, -2:].data.numpy()
+                cls_info = det[:, -2:].data.numpy().astype(np.float64)
                 classes = [ names[cls] for cls in cls_info[:, -1]]
-                cls_conf = cls_info[:, 0].tolist()
+                cls_conf =list(cls_info[:, 0].round(decimals=3)) # 下3桁まで表示
                 
     
         # 1とbbox付き画像のndarray配列を返す予定

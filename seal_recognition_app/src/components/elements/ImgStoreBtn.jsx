@@ -81,10 +81,6 @@ const ImgStoreBtn = (props) => {
       >
         アップロードファイルの保存
       </Button>
-
-      {/* 物体検知ボタン */}
-      {/* {resResult && <DetectionBtn />} */} 
-      <DetectionBtn />
     </>
   );
 };
