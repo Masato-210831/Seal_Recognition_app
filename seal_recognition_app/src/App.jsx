@@ -6,12 +6,12 @@ import NotFound from './components/pages/NotFound'
 
 const App = () => {
   return (
-    <div>
+    <>
       <Routes>
         <Route path='/' element={<Home/>}></Route>
         <Route path='/notfound' element={<NotFound/>}></Route>
       </Routes>
-    </div>
+    </>
   )
 }
 

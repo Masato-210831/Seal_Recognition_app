@@ -39,7 +39,6 @@ const UploadBtn = ({ inputFiles, setInputFiles }) => {
 
   return (
     <>
-      <h3>ファイルのアップロード</h3>
       <input ref={inputRef} type="file" multiple onChange={handleChange} />
       <Box mb={3}>
         {selectedFileArray.map((file, index) => (

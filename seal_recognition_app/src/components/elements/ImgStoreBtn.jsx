@@ -3,15 +3,16 @@ import DetectionBtn from "./DetectionBtn";
 import { Button, Box, Typography } from "@mui/material";
 import axios from "axios";
 
-const ImgStoreBtn = (props) => {
+const ImgStoreBtn = ({inputFiles, storedState}) => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [resResult, setResResult] = useState("");
+  // const [storedResult, setStoredResult] = useState("");
 
-  const files = props.inputFiles; // 送信する画像配列
+  const [storedResult, setStoredResult] = storedState;
+  const files = inputFiles; // 送信する画像配列
 
   useEffect(() => {
     if (files.length === 0) {
-      setResResult("");
+      setStoredResult("");
     }
   });
 
@@ -43,7 +44,7 @@ const ImgStoreBtn = (props) => {
       .then(function (response) {
         console.log("responseは", response.data);
         console.log("展開", [...response.data.filename]);
-        setResResult(response);
+        setStoredResult(response);
       })
       .catch(function (error) {
         console.log(error);
@@ -58,9 +59,9 @@ const ImgStoreBtn = (props) => {
   return (
     <>
       {/* ファイルの保存完了時に表示 */}
-      {resResult && (
+      {storedResult && (
         <Box>
-          <Typography>アップロードファイルの保存が完了しました。</Typography>
+          <Typography>ファイルの送信が完了しました。</Typography>
           <Typography>物体検知可能です！！</Typography>
         </Box>
       )}
@@ -77,9 +78,9 @@ const ImgStoreBtn = (props) => {
       <Button
         onClick={pressbtn}
         variant="contained"
-        sx={{ display: "block", width: 300, opacity: 0.7 }}
+        sx={{ display: "block", width: 200, opacity: 0.7 }}
       >
-        アップロードファイルの保存
+        ファイルの送信
       </Button>
     </>
   );

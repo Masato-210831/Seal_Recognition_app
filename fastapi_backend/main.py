@@ -114,7 +114,7 @@ def predict():
     # ====================
     
     # 総合的結果
-    result = '未押印検出されませんでした。' if no_seal_detection == 0 else f'未押印が検出されました（合計：{no_seal_detection}ページ）。'
+    result = '未押印検出されませんでした。' if no_seal_detection == 0 else f'未押印が検出されました（合計：{no_seal_detection}ページ）'
     
 
     response = {
