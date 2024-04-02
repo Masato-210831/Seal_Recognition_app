@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import ImgStoreBtn from "../elements/ImgStoreBtn";
 import UploadBtn from "../elements/UploadBtn";
 import DetectionBtn from "../elements/DetectionBtn";
@@ -8,6 +8,7 @@ import ShowDetects from "../elements/ShowDetects";
 const Home = () => {
   // アップロードするファイル
   const [inputFiles, setInputFiles] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // 画像検出の結果の状態保管関係
   const [detects, setDetects] = useState({
@@ -44,11 +45,13 @@ const Home = () => {
             <ImgStoreBtn
               inputFiles={inputFiles}
               storedState={[storedResult, setStoredResult]}
-            />
+              errorState ={[errorMessage, setErrorMessage]}
+              />
             {storedResult && (
               <DetectionBtn
-                setDetects={setDetects}
-                setStoredResult={setStoredResult}
+              setDetects={setDetects}
+              setStoredResult={setStoredResult}
+              setErrorMessage ={setErrorMessage}
               />
             )}
           </Box>

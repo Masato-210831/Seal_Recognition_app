@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@mui/material";
 import axios from "axios";
 
-const DetectionBtn = ({ setDetects, setStoredResult }) => {
+const DetectionBtn = ({ setDetects, setStoredResult, setErrorMessage }) => {
   const imgDetection = () => {
     
     // 送信完了の文字を消す(物体検知をすると保管データを消すので)
@@ -25,6 +25,11 @@ const DetectionBtn = ({ setDetects, setStoredResult }) => {
       })
       .catch(function (error) {
         console.log(error);
+        if (error.response) {
+          setErrorMessage(error.response.data.detail); // エラーメッセージを設定
+        } else {
+          setErrorMessage("推論中にエラーが発生しました。"); // 一般的なエラーメッセージを設定
+        }
       });
   };
 

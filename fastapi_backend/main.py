@@ -88,7 +88,6 @@ def predict():
         cls_id, no_seal_img, classes, cls_conf = run(session, img_path)
         print(f"-----FileName:{basename(img_path[:-4])}---------")
         print('推論結果:', cls_id)
-        
     
         #未押印が検出された場合
         if cls_id == 1 :

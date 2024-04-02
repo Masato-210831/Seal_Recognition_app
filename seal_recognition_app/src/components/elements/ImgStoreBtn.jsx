@@ -3,11 +3,11 @@ import DetectionBtn from "./DetectionBtn";
 import { Button, Box, Typography } from "@mui/material";
 import axios from "axios";
 
-const ImgStoreBtn = ({inputFiles, storedState}) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  // const [storedResult, setStoredResult] = useState("");
+const ImgStoreBtn = ({inputFiles, storedState, errorState}) => {
 
   const [storedResult, setStoredResult] = storedState;
+  const [errorMessage, setErrorMessage] = errorState;
+
   const files = inputFiles; // 送信する画像配列
 
   useEffect(() => {
