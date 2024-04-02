@@ -72,8 +72,8 @@ const Home = () => {
         <Box sx={{ pl: "300px", mx: "auto" }}>
           {showInference && (
             <Box sx={{textAlign:'center'}}>
-              <h2>推論中・・・</h2>
-              <Box><LinearProgress size='lg'/></Box>
+              <h2>推論中・・・(初回は時間が掛かります)</h2>
+              <Box sx={{width:'100%'}}><LinearProgress size='lg'/></Box>
             </Box>
           )}
           <Box>{detects.result && <ShowDetects detects={detects} />}</Box>
