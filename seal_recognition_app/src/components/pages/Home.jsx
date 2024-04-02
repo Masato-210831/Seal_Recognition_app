@@ -1,58 +1,85 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useState } from "react";
+import { Box } from "@mui/material";
+import LinearProgress from '@mui/material/LinearProgress'
+import ImgStoreBtn from "../elements/ImgStoreBtn";
+import UploadBtn from "../elements/UploadBtn";
+import DetectionBtn from "../elements/DetectionBtn";
+import ShowDetects from "../elements/ShowDetects";
+
 
 const Home = () => {
-  const inputRef = useRef(null);
-  const [inputFiles, setInputFiles] = useState("");
-  console.log("現在のinputFileの中身は:", inputFiles[0]);
+  // アップロードするファイル
+  const [inputFiles, setInputFiles] = useState([]);
 
-  const selectedFileArray = useMemo(() => {
-    return inputFiles ? [...Array.from(inputFiles)] : [];
-  }, [inputFiles]);
+  // エラーメッセージ
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) => {
-    if (!e.target.files) return;
-    if (!inputRef.current?.files) return; //?.はオプショナルチェーン, ??はnull合体演算子
-    const newFileArray = [
-      ...selectedFileArray,
-      ...Array.from(e.target.files),
-    ].filter(
-      (
-        file,
-        index,
-        self // [...].filterで現在処理しているfile, index, array自体のself
-      ) => self.findIndex((f) => f.name === file.name) === index // 重複を削除 -> 現在処理しているfileとindexが同じならTrueでfilterされない
-    );
+  // ファイルの送信完了の状態
+  const [storedResult, setStoredResult] = useState("");
 
-    const dt = new DataTransfer();
-    newFileArray.forEach((file) => dt.items.add(file));
-    inputRef.current.files = dt.files; // input内のFileListを更新
-    setInputFiles(dt.files); // Reactのstateを更新
-  };
+  // 推論中の画面表示
+  const [showInference, setShowInference] = useState(false);
 
-  const handleDelete = (index) => {
-    if (!inputRef.current?.files) return;
-    const dt = new DataTransfer();
-    selectedFileArray.forEach((file, i) => i !== index && dt.items.add(file));
-    inputRef.current.files = dt.files; // input内のFileListを更新
-    setInputFiles(dt.files); // Reactのstateを更新
-  };
+  // 画像検出の結果の状態保管関係
+  const [detects, setDetects] = useState({
+    result: "",
+    imgs: [],
+    imgsName: [],
+    classList: [],
+    clsConfList: [],
+  });
+
+
 
   return (
-    <div>
-      <h3>ファイルのアップロード</h3>
-      <input ref={inputRef} type="file" multiple onChange={handleChange} />
-      <div>
-        {selectedFileArray.map((file, index) => (
-          <div
-            key={file.name}
-            className="flex items-center justify-between gap-2"
-          >
-            <div>{file.name}</div>
-            <button onClick={() => handleDelete(index)}>削除</button>
-          </div>
-        ))}
-      </div>
-    </div>
+    <>
+      {/* アップロード ＆ 推論ボタン */}
+      <Box sx={{ display: "flex", height: "100vh" }}>
+        <Box
+          sx={{
+            maxWidth: 300,
+            p: 1,
+            borderRight: 1,
+            borderColor: "grey.500",
+            height: "100%",
+            position: "fixed",
+            bgcolor: "#fafafa",
+          }}
+        >
+          <h3>ファイルのアップロード</h3>
+          <Box>
+            <UploadBtn inputFiles={inputFiles} setInputFiles={setInputFiles} />
+          </Box>
+
+          <Box gap={0.5} sx={{ display: "flex", flexDirection: "column" }}>
+            <ImgStoreBtn
+              inputFiles={inputFiles}
+              storedState={[storedResult, setStoredResult]}
+              errorState={[errorMessage, setErrorMessage]}
+            />
+            {storedResult && (
+              <DetectionBtn
+                setDetects={setDetects}
+                setStoredResult={setStoredResult}
+                setErrorMessage={setErrorMessage}
+                setShowInference={setShowInference}
+              />
+            )}
+          </Box>
+        </Box>
+
+        {/* 推論結果表示画面 */}
+        <Box sx={{ pl: "300px", mx: "auto" }}>
+          {showInference && (
+            <Box sx={{textAlign:'center'}}>
+              <h2>推論中・・・(初回は時間が掛かります)</h2>
+              <Box sx={{width:'100%'}}><LinearProgress size='lg'/></Box>
+            </Box>
+          )}
+          <Box>{detects.result && <ShowDetects detects={detects} />}</Box>
+        </Box>
+      </Box>
+    </>
   );
 };
 

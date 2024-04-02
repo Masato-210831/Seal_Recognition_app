@@ -6,9 +6,23 @@ import glob
 from my_utils.functions import run, imgarrtobyte, img_save
 from os.path import basename
 import onnxruntime as ort
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+# Cors対応
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # POSTされた画像の保存ディレクトリのパス
 imgs_store_path = './img_store'
@@ -47,7 +61,7 @@ async def create_upload_file(files: list[UploadFile]):
 def predict():
     # ファイルをアップロードしているかの確認
     if not os.path.exists(imgs_store_path):
-       raise HTTPException(status_code=400, detail="ファイルをアップロードしてください")
+       raise HTTPException(status_code=400, detail="アップロードファイルの保存をしてください")
    
     # ファイルのパスを取得 
     imgs_path = glob.glob(imgs_store_path + '/*')
@@ -55,8 +69,10 @@ def predict():
     
     # 物体検知後の結果保存
     no_seal_detection = 0
-    filename_folder = []
+    filename_holder = []
     imgs_holder = []
+    cls_holder = []
+    cls_conf_holder = []
 
     # ==========
     # 推論
@@ -67,12 +83,11 @@ def predict():
     for img_path in imgs_path:
         
         # 返り値:
-        # 未押印あり→ (1, RGB画像のndarray配列)
+        # 未押印あり→ (1, RGB画像のndarray配列, classのリスト, 信頼スコアリスト)
         # 押印のみ  → (0, None)
-        cls_id, no_seal_img = run(session, img_path)
+        cls_id, no_seal_img, classes, cls_conf = run(session, img_path)
         print(f"-----FileName:{basename(img_path[:-4])}---------")
         print('推論結果:', cls_id)
-        
     
         #未押印が検出された場合
         if cls_id == 1 :
@@ -82,9 +97,14 @@ def predict():
             img_str = imgarrtobyte(no_seal_img)
             
             # Response用にファイル名、画像データの格納
+            #===
+            #後日→リスト処理する
+            #===
             filename = basename(img_path[:-4])
-            filename_folder.append(filename)
+            filename_holder.append(filename)
             imgs_holder.append(img_str)
+            cls_holder.append(classes)
+            cls_conf_holder.append(cls_conf)
         else:
             continue
     
@@ -93,14 +113,15 @@ def predict():
     # ====================
     
     # 総合的結果
-    result = '未押印検出されませんでした。' if no_seal_detection == 0 else '未押印が検出されました。'
+    result = '未押印検出されませんでした。' if no_seal_detection == 0 else f'未押印が検出されました（合計：{no_seal_detection}ページ）'
     
 
     response = {
         'result': result,
-        'no_seal_detection': no_seal_detection,
-        'no_seal_imgs_list':filename_folder,
-        'image_list': imgs_holder
+        'no_seal_imgs_names':filename_holder,
+        'classes': cls_holder,
+        'cls_conf': cls_conf_holder,
+        'image_list': imgs_holder,
     }
     
     # 画像保存ディレクトリの削除
