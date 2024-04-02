@@ -1,14 +1,24 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
+import LinearProgress from '@mui/material/LinearProgress'
 import ImgStoreBtn from "../elements/ImgStoreBtn";
 import UploadBtn from "../elements/UploadBtn";
 import DetectionBtn from "../elements/DetectionBtn";
 import ShowDetects from "../elements/ShowDetects";
 
+
 const Home = () => {
   // アップロードするファイル
   const [inputFiles, setInputFiles] = useState([]);
+
+  // エラーメッセージ
   const [errorMessage, setErrorMessage] = useState("");
+
+  // ファイルの送信完了の状態
+  const [storedResult, setStoredResult] = useState("");
+
+  // 推論中の画面表示
+  const [showInference, setShowInference] = useState(false);
 
   // 画像検出の結果の状態保管関係
   const [detects, setDetects] = useState({
@@ -19,11 +29,11 @@ const Home = () => {
     clsConfList: [],
   });
 
-  // ファイルの送信完了の状態
-  const [storedResult, setStoredResult] = useState("");
+
 
   return (
     <>
+      {/* アップロード ＆ 推論ボタン */}
       <Box sx={{ display: "flex", height: "100vh" }}>
         <Box
           sx={{
@@ -45,19 +55,27 @@ const Home = () => {
             <ImgStoreBtn
               inputFiles={inputFiles}
               storedState={[storedResult, setStoredResult]}
-              errorState ={[errorMessage, setErrorMessage]}
-              />
+              errorState={[errorMessage, setErrorMessage]}
+            />
             {storedResult && (
               <DetectionBtn
-              setDetects={setDetects}
-              setStoredResult={setStoredResult}
-              setErrorMessage ={setErrorMessage}
+                setDetects={setDetects}
+                setStoredResult={setStoredResult}
+                setErrorMessage={setErrorMessage}
+                setShowInference={setShowInference}
               />
             )}
           </Box>
         </Box>
 
+        {/* 推論結果表示画面 */}
         <Box sx={{ pl: "300px", mx: "auto" }}>
+          {showInference && (
+            <Box sx={{textAlign:'center'}}>
+              <h2>推論中・・・</h2>
+              <Box><LinearProgress size='lg'/></Box>
+            </Box>
+          )}
           <Box>{detects.result && <ShowDetects detects={detects} />}</Box>
         </Box>
       </Box>
