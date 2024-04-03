@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Cors対応
+# CORS対応
 origins = [
     "https://masa-devs.net",
     "http://localhost:5173",
@@ -53,7 +53,7 @@ async def create_upload_file(files: list[UploadFile]):
                 
     # 保存したファイル名を返信
     return JSONResponse(content=response)
-    
+     
     
 #==================
 # 未押印の物体検知

@@ -1,0 +1,33 @@
+# 開発と同じpythonパッケージを指定
+# slimで使用頻度の低いパッケージを除外
+FROM python:3.12.2-slim
+
+# pdf2imageにpopplerは必要になるのでインストール
+# poetryのインストール
+RUN apt-get update && \
+    apt-get install -y poppler-utils && \
+    apt-get install -y libgl1-mesa-glx && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir poetry==1.8.2
+
+WORKDIR /app
+
+# poetryのパッケージ情報等をまずコビー
+COPY pyproject.toml poetry.lock ./
+
+# 本番用の設定をして、パッケージのインストール
+# --no-ansi:カラーコードや装飾を無効
+# --only main:開発環境用の依存関係はイントールしない
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi --only main
+
+# ルートディレクトリをWorking dirにコピー
+COPY . /app
+
+# ポートの指定
+EXPOSE 8000
+
+# Poetryを使用してuvicornを起動
+CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
