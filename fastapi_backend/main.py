@@ -13,8 +13,10 @@ app = FastAPI()
 
 # Cors対応
 origins = [
+    "https://masa-devs.net",
     "http://localhost:5173",
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -79,7 +81,7 @@ def predict():
     # ==========
 
     # 1画像ごとに処理
-    session = ort.InferenceSession('best.onnx')
+    session = ort.InferenceSession('./onnx/best.onnx')
     for img_path in imgs_path:
         
         # 返り値:
