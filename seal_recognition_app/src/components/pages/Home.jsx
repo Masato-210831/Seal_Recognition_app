@@ -34,7 +34,7 @@ const Home = () => {
   return (
     <>
       {/* アップロード ＆ 推論ボタン */}
-      <Box sx={{ display: "flex", height: "100vh" }}>
+      <Box sx={{ display: "flex", height: "100%"}}>
         <Box
           sx={{
             maxWidth: 300,
@@ -44,6 +44,7 @@ const Home = () => {
             height: "100%",
             position: "fixed",
             bgcolor: "#fafafa",
+            overflowY: "auto"
           }}
         >
           <h3>ファイルのアップロード</h3>
@@ -51,7 +52,7 @@ const Home = () => {
             <UploadBtn inputFiles={inputFiles} setInputFiles={setInputFiles} />
           </Box>
 
-          <Box gap={0.5} sx={{ display: "flex", flexDirection: "column" }}>
+          <Box gap={0.5} sx={{ display: "flex", flexDirection: "column", pb:4 }}>
             <ImgStoreBtn
               inputFiles={inputFiles}
               storedState={[storedResult, setStoredResult]}
@@ -69,11 +70,11 @@ const Home = () => {
         </Box>
 
         {/* 推論結果表示画面 */}
-        <Box sx={{ pl: "300px", mx: "auto" }}>
+        <Box sx={{ pl: "300px", mx: "auto"}}>
           {showInference && (
-            <Box sx={{textAlign:'center'}}>
-              <h2>推論中・・・(初回は時間が掛かります)</h2>
-              <Box sx={{width:'100%'}}><LinearProgress size='lg'/></Box>
+            <Box sx={{textAlign:'center', minWidth:'600px', mx:'auto'}}>
+              <h2>推論中・・・</h2>
+              <Box sx={{width:'100%'}}><LinearProgress size='g'/></Box>
             </Box>
           )}
           <Box>{detects.result && <ShowDetects detects={detects} />}</Box>

@@ -13,12 +13,30 @@ python-multipart = "^0.0.9"
 aiofiles = "^23.2.1"
 pillow = "^10.2.0"
 opencv-python = "^4.9.0.80"
-torchvision = "^0.17.1"
 numpy = "^1.26.4"
-torch = "^2.2.1"
 onnxruntime = "^1.17.1"
 pdf2image = "^1.17.0"
+torch = [
+    {version = "^2.2.1", markers="sys_platform == 'darwin'", source = "default"},
+    {version = "^2.2.1", markers="sys_platform != 'darwin'", source = "torch-cpu"},
+]
+torchvision = [
+    {version = "^0.17.1", markers="sys_platform == 'darwin'", source = "default"},
+    {version = "^0.17.1", markers="sys_platform != 'darwin'", source = "torch-cpu"},
+]
 
+
+
+
+[[tool.poetry.source]]
+name = "default"
+url = "https://pypi.python.org/simple/"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]

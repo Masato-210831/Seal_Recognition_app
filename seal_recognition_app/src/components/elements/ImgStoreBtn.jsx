@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import DetectionBtn from "./DetectionBtn";
 import { Button, Box, Typography } from "@mui/material";
 import axios from "axios";
+import { typography } from "@mui/system";
 
 const ImgStoreBtn = ({inputFiles, storedState, errorState}) => {
 
   const [storedResult, setStoredResult] = storedState;
   const [errorMessage, setErrorMessage] = errorState;
+  const [initState, setInitState] = useState(false)
 
   const files = inputFiles; // 送信する画像配列
 
@@ -27,8 +29,12 @@ const ImgStoreBtn = ({inputFiles, storedState, errorState}) => {
       setErrorMessage("");
     }
 
+    setStoredResult("")
+    setInitState(true) // 送信中表示
+
     // POSTするURL
-    const post_url = "http://127.0.0.1:8000/uploadfile/ ";
+    // const post_url = "http://127.0.0.1:8000/uploadfile/ ";
+    const post_url = "https://detection-image-vdaepgddza-uc.a.run.app/uploadfile/ ";
 
     // FormDataオブジェクトに追加
     const formData = new FormData();
@@ -42,12 +48,12 @@ const ImgStoreBtn = ({inputFiles, storedState, errorState}) => {
         },
       })
       .then(function (response) {
-        console.log("responseは", response.data);
-        console.log("展開", [...response.data.filename]);
         setStoredResult(response);
+        setInitState(false) // 送信中非表示
       })
       .catch(function (error) {
         console.log(error);
+        setInitState(false) // 送信中非表示
         if (error.response) {
           setErrorMessage(error.response.data.detail); // エラーメッセージを設定
         } else {
@@ -58,6 +64,13 @@ const ImgStoreBtn = ({inputFiles, storedState, errorState}) => {
 
   return (
     <>
+      {initState && (
+        <Box>
+          <Typography>ファイル送信中・・・</Typography>
+          <Typography>初回は時間がかかります!!</Typography>
+        </Box>
+      )}
+
       {/* ファイルの保存完了時に表示 */}
       {storedResult && (
         <Box>
