@@ -66,7 +66,7 @@ const MethodList = () => {
               </Typography>
             </ListItem>
             <ListItem sx={{ display: "list-item", px: 0, pb: 0 }}>
-              <Typography>
+              <Typography sx={{ fontSize: { sm: 16, xs: 14 } }}>
                 ファイルの送信が完了したら、検出開始ボタンを押して未押印検出を開始してください。
               </Typography>
             </ListItem>
