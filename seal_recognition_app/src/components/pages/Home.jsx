@@ -86,7 +86,7 @@ const Home = () => {
 
         {detects.result !== "" && (
           <>
-            <Heading word={"物体検知の結果"} />
+            <Heading word={"物体検出の結果"} />
             <Box sx={{ mx: {md:"50px", sm:0, xs:0} }}>
               <Box>{detects.result && <ShowDetects detects={detects} />}</Box>
             </Box>
