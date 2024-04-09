@@ -34,82 +34,66 @@ const Home = () => {
 
   return (
     <>
-        <Header />
-        {/* アップロード ＆ 推論ボタン */}
-        <Box
-          sx={{ padding: "32px 24px", maxWidth: "1080px", margin: "0 auto" }}
-        >
-          <Heading word={"未押印の検知"} />
+      <Header />
+      {/* アップロード ＆ 推論ボタン */}
+      <Box sx={{ padding: {md:"32px 24px", sm:"24px 16px", xs:"16px 16px"}, maxWidth: "1080px", margin: "0 auto" }}>
+        <Heading word={"未押印の検出"} />
 
-          <Box sx={{ mx: "50px" }}>
-            <MethodList />
+        <Box sx={{ mx: {md:"50px", sm:0} }}>
+          <MethodList />
 
-            <Box
-              sx={{
-                bgcolor: "#fafafa",
-                mb: 4,
-                border: 1,
-                borderColor: "#A6A6A6",
-                padding: "24px",
-                boxShadow: "1px 1px 1px rgba(0, 0, 0, .5)",
-              }}
-            >
-              <Typography
-                sx={{ fontWeight: "bold", mb:2 }}
-              >
-                ファイルの送信 & 物体検知
-              </Typography>
+          <Box
+            sx={{
+              bgcolor: "#fafafa",
+              mb: {md:4, sm:3, xs:3},
+              border: 1,
+              borderColor: "#A6A6A6",
+              padding: {sm:3, xs:2},
+              boxShadow: "1px 1px 1px rgba(0, 0, 0, .5)",
+              borderRadius: 1,
+            }}
+          >
+            <Typography sx={{ fontWeight: "bold", mb: 2 }}>
+              ファイルの送信 & 物体検知
+            </Typography>
 
-              <Box>
-                <UploadBtn
-                  inputFiles={inputFiles}
-                  setInputFiles={setInputFiles}
-                />
-              </Box>
-
-              <Message
-                errorMessage={errorMessage}
-                storedResult={storedResult}
+            <Box>
+              <UploadBtn
+                inputFiles={inputFiles}
+                setInputFiles={setInputFiles}
               />
-              <Box display={"flex"} gap={1}>
-                <ImgStoreBtn
-                  inputFiles={inputFiles}
-                  setStoredResult={setStoredResult}
-                  setErrorMessage={setErrorMessage}
-                />
-                {storedResult && (
-                  <DetectionBtn
-                    setDetects={setDetects}
-                    setStoredResult={setStoredResult}
-                    setErrorMessage={setErrorMessage}
-                    setShowInference={setShowInference}
-                  />
-                )}
-              </Box>
             </Box>
+
+            <Message errorMessage={errorMessage} storedResult={storedResult} />
+            <Box display={"flex"} gap={1}>
+              <ImgStoreBtn
+                inputFiles={inputFiles}
+                setStoredResult={setStoredResult}
+                setErrorMessage={setErrorMessage}
+              />
+
+              <DetectionBtn
+                setDetects={setDetects}
+                storedState={[storedResult, setStoredResult]}
+                setErrorMessage={setErrorMessage}
+                setShowInference={setShowInference}
+                showInference = {showInference}
+              />
+            </Box>
+            <Typography sx={{mt:1, fontSize:{sm:14, xs:12} }}>(注) 初回の送信は時間が掛かります。</Typography>
           </Box>
+        </Box>
 
-          {/* 推論結果表示画面 */}
-          {showInference && (
-            <>
-              <Box sx={{ textAlign: "center", minWidth: "600px", mx: "auto" }}>
-                <h2>推論中・・・</h2>
-                <Box sx={{ width: "100%" }}>
-                  <LinearProgress size="g" />
-                </Box>
-              </Box>
-            </>
-          )}
-
-          {detects.result !== "" && (
-            <>
-              <Heading word={"物体検知の結果"} />
-              <Box sx={{ mx: "50px" }}>
-                <Box>{detects.result && <ShowDetects detects={detects} />}</Box>
-              </Box>
-            </>
-          )}
-        </Box>Ï
+        {detects.result !== "" && (
+          <>
+            <Heading word={"物体検知の結果"} />
+            <Box sx={{ mx: {md:"50px", sm:0, xs:0} }}>
+              <Box>{detects.result && <ShowDetects detects={detects} />}</Box>
+            </Box>
+          </>
+        )}
+      </Box>
+      Ï
     </>
   );
 };

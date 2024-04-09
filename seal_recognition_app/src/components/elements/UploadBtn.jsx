@@ -43,7 +43,7 @@ const UploadBtn = ({ inputFiles, setInputFiles }) => {
       <Box mb={3}>
         {selectedFileArray.map((file, index) => (
           <Box key={file.name} display="flex" gap={2} mt={1} mr={1}>
-            <div>{file.name}</div>
+            <Box sx={{fontSize:{sm:16, xs:14}}}>{file.name}</Box>
             <button onClick={() => handleDelete(index)}>削除</button>
           </Box>
         ))}

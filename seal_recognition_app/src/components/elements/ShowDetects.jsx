@@ -14,25 +14,26 @@ const ShowDetects = ({ detects }) => {
   return (
     <>
       {/* 物体検知結果の表示 */}
-      <Typography variant="h5" color="darkred" sx={{ my: 4 }}>
+      <Typography variant="h3" color="darkred" sx={{ my: 4, fontSize:{sm:24, xs:16}}}>
         {detects.result}
       </Typography>
 
       <Box>
         {detects.imgsName.map((name, index) => (
-          <Box key={name} sx={{mb:4}}>
+          <Box key={name} sx={{mb:{sm:4, xs:3}}}>
             <Typography sx={{ mb: 0.5 }}>ファイル名：{name}</Typography>
-            <Box sx={{ display: "flex" }}>
-              <Box sx={{ width:"50%" ,border: 1, mr: 2, flex:3 }}>
+            <Box sx={{ display: "flex", flexDirection:{sm:"row", xs:"column" } }}>
+              <Box sx={{ mr: {sm:2, xs:0}, flex:{md:3, sm:2, xs:2} }}>
                 <img
                   src={`data:image/jpeg;base64, ${detects.imgs[index]}`}
                   alt={name}
-                  style={{ maxWidth: "100%", height: "auto" }}
+                  style={{ maxWidth: "100%", height: "auto"}}
+                  border="1"
                 />
               </Box>
 
               {/* 識別結果＋スコアのテーブル */}
-              <Box sx={{flex:1}}>
+              <Box sx={{mt:{sm:0, xs:1, flex:1}}}>
                 <TableContainer>
                   <Table size="small">
                     <TableHead>

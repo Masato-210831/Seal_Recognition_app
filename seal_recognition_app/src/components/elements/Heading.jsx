@@ -9,7 +9,8 @@
             variant="h6"
             sx={{
               fontWeight: "bold",
-              fontSize:"24px",
+              // fontSize:"24px",
+              fontSize:{md:"24px", sm:20},
               display: "inline",
               borderBottom: 3,
               borderColor: "#A6A6A6",

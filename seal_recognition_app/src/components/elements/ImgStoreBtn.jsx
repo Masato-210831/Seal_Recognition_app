@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import DetectionBtn from "./DetectionBtn";
-import { Button, Box, Typography } from "@mui/material";
 import axios from "axios";
+import DetectionBtn from "./DetectionBtn";
+import SendIcon from '@mui/icons-material/Send';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
 const ImgStoreBtn = ({inputFiles, setStoredResult, setErrorMessage}) => {
@@ -62,21 +63,16 @@ const ImgStoreBtn = ({inputFiles, setStoredResult, setErrorMessage}) => {
 
   return (
     <>
-      {/* ========================ボタンのlodingみたいな感じのgifを導入========================= */}
-      {/* {initState && (
-        <Box sx={{mb:1}}>
-          <Typography>ファイル送信中・・・</Typography>
-          <Typography>初回は時間がかかります!!</Typography>
-        </Box>
-      )} */}
-
-      <Button
-        onClick={pressbtn}
-        variant="contained"
-        sx={{ display: "block", width: 200, opacity: 0.7 }}
-      >
-        ファイルの送信
-      </Button>
+      <LoadingButton
+          onClick={pressbtn}
+          endIcon={<SendIcon />}
+          loading={initState}
+          loadingPosition="end"
+          variant="contained"
+          sx={{width:170, fontSize:{sm:16, xs:12}}}
+        >
+          <span>ファイルの送信</span>
+        </LoadingButton>
     </>
   );
 };

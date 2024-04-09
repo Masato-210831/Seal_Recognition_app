@@ -1,14 +1,22 @@
 import React from "react";
-import { Button } from "@mui/material";
 import axios from "axios";
+import { Button } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const DetectionBtn = ({
   setDetects,
-  setStoredResult,
+  storedState,
   setErrorMessage,
   setShowInference,
+  showInference,
 }) => {
+
+  const [storedResult, setStoredResult] = storedState;
+
   const imgDetection = () => {
+
+
     // 送信完了の文字を消す(物体検知をすると保管データを消すので)
     setStoredResult("");
 
@@ -57,14 +65,18 @@ const DetectionBtn = ({
 
   return (
     <>
-      <Button
-        variant="contained"
-        color="warning"
-        sx={{ bgcolor: "warning.main", width: 200 }}
-        onClick={imgDetection}
-      >
-        未押印の検知開始
-      </Button>
+      <LoadingButton
+          onClick={imgDetection}
+          loading={showInference}
+          endIcon={<PlayArrowIcon/>}
+          loadingPosition="end"
+          variant="contained"
+          disabled={storedResult.data === undefined}
+          color="warning"
+          sx={{ width: 170, fontSize:{sm:16, xs:12}}}
+        >
+          <span>検出開始</span>
+        </LoadingButton>
     </>
   );
 };
