@@ -10,9 +10,9 @@ import NotFound from "./components/pages/NotFound";
 const theme = createTheme({
   typography: {
     fontFamily: [
+      '"Hiragino Kaku Gothic ProN"',
       '"Helvetica Neue"',
       'Arial',
-      '"Hiragino Kaku Gothic ProN"',
       'Meiryo',
       'sans-serif',
     ].join(','),

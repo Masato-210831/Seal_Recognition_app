@@ -53,16 +53,20 @@ const MethodList = () => {
               fontSize: { sm: 16, xs: 14 },
             }}
           >
-            <ListItem sx={{ display: "list-item", pl: 0 }}>
-              ファイル選択ボタンを押して、未押印検出をしたいファイルを選択してください。
-              <br />
-              対応ファイル：JPEG, JPG, PNG, PDF
+            <ListItem sx={{ display: "list-item", pl: 0, pb:0 }}>
+              <Typography>
+                ファイル選択ボタンを押して、未押印検出をしたいファイルを選択してください。
+                <br />
+                対応ファイル：JPEG, JPG, PNG, PDF
+              </Typography>
             </ListItem>
-            <ListItem sx={{ display: "list-item", pl: 0 }}>
-              ファイルの送信ボタンを押してください。
+            <ListItem sx={{ display: "list-item", pl: 0, pb:0 }}>
+              <Typography>ファイルの送信ボタンを押してください。</Typography>
             </ListItem>
             <ListItem sx={{ display: "list-item", pl: 0, pb: 0 }}>
-              ファイルの送信が完了したら、検出開始ボタンを押して未押印検出を開始してください。
+              <Typography>
+                ファイルの送信が完了したら、検出開始ボタンを押して未押印検出を開始してください。
+              </Typography>
             </ListItem>
           </List>
         </Box>
