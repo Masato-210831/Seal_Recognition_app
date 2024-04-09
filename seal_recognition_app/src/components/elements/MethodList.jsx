@@ -46,7 +46,7 @@ const MethodList = () => {
           <List
             component="ol"
             sx={{
-              pl: 3,
+              pl: 3.5,
               pt: { sm: 0.5, xs: 0 },
               pb: 0,
               listStyleType: "decimal",
