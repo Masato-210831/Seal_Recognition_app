@@ -54,7 +54,7 @@ const Home = () => {
             }}
           >
             <Typography sx={{ fontWeight: "bold", mb: 2 }}>
-              ファイルの送信 & 物体検知
+              ファイルの送信 & 物体検出
             </Typography>
 
             <Box>
@@ -80,7 +80,7 @@ const Home = () => {
                 showInference = {showInference}
               />
             </Box>
-            <Typography sx={{mt:1, fontSize:{sm:14, xs:12} }}>(注) 初回の送信は時間が掛かります。</Typography>
+            <Typography sx={{mt:1, fontSize:{sm:14, xs:12} }}>(注) 初回の送信は時間(約20秒)が掛かります。</Typography>
           </Box>
         </Box>
 
