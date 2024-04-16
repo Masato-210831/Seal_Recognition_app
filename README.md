@@ -11,31 +11,26 @@
 * 画像ファイルだけでなくPDFファイルも検出可能にしたこと
 * なるべく無料枠で済むようにGCPにデプロイしたこと
 
-<br><br>
+<br>
 
 ## 使用技術
-### バックエンド
+_バックエンド_
 * Poetry 1.8.2
 * Python 3.12.2
 * FastAPI 0.110.0
 
-<br>
 
-### フロントエンド
+_フロントエンド_
 * React 18.2.0
 * Vite 5.1.4
 * Material-UI
 
-<br>
-
-### 機械学習関係
+_機械学習関係_
 * YOLOv5
 * labelImage (画像データのアノテーション)
 * ONNX
 
-<br>
-
-### 環境構築
+_環境構築_
 * Docker
 * GCP
   * Artifact Registry
