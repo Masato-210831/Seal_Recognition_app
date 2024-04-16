@@ -14,23 +14,23 @@
 <br>
 
 ## 使用技術
-_バックエンド_
+**バックエンド**
 * Poetry 1.8.2
 * Python 3.12.2
 * FastAPI 0.110.0
 
 
-_フロントエンド_
+**フロントエンド**
 * React 18.2.0
 * Vite 5.1.4
 * Material-UI
 
-_機械学習関係_
+**機械学習関係**
 * YOLOv5
 * labelImage (画像データのアノテーション)
 * ONNX
 
-_環境構築_
+**環境構築**
 * Docker
 * GCP
   * Artifact Registry
