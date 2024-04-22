@@ -5,9 +5,7 @@ FROM python:3.12.2-slim
 # pdf2imageにpopplerは必要になるのでインストール
 # poetryのインストール
 RUN apt-get update && \
-    apt-get install -y poppler-utils && \
-    apt-get install -y libgl1-mesa-glx && \
-    apt-get install -y libglib2.0-0 && \
+    apt-get install -y poppler-utils libgl1-mesa-glx libglib2.0-0 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip && \
@@ -24,6 +22,9 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false && \
     poetry install --no-dev --no-interaction --no-ansi --only main &&\
     rm -rf ~/.cache
+
+# Poetryの現在の設定を出力 => デプロイ先でなぜか仮想環境が作られていたため
+RUN poetry config --list
 
 # ルートディレクトリをWorking dirにコピー
 COPY . /app
