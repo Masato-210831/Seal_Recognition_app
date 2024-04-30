@@ -7,6 +7,7 @@ from my_utils.functions import run, imgarrtobyte, img_save
 from os.path import basename
 import onnxruntime as ort
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
 
 app = FastAPI()
@@ -99,9 +100,6 @@ def predict():
             img_str = imgarrtobyte(no_seal_img)
             
             # Response用にファイル名、画像データの格納
-            #===
-            #後日→リスト処理する
-            #===
             filename = basename(img_path[:-4])
             filename_holder.append(filename)
             imgs_holder.append(img_str)
@@ -131,5 +129,22 @@ def predict():
 
 
     return JSONResponse(content=response)
+
+
+#=====================================
+# Clound runのコールドスタート問題対策
+#=====================================
+
+# ヘルスチェックのエンドポイント
+@app.get("/health")
+def health_check():
+    return {"status":"OK"}
+
+# uvicronサーバーの立ち上がりを同期的に行う
+if __name__ == "__main__":
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
+    server = uvicorn.Server(config)
+    server.run()
+    
 
 

@@ -30,9 +30,8 @@ const ImgStoreBtn = ({ inputFiles, setStoredResult, setErrorMessage }) => {
 
     // POSTするURL
     // const post_url = "http://127.0.0.1:8000/uploadfile/ ";
-    // const post_url = "https://test-vdaepgddza-uc.a.run.app/uploadfile/ ";
-    const post_url =
-      "https://detection-image-vdaepgddza-uc.a.run.app/uploadfile/ ";
+    // const post_url = "https://detection-image-vdaepgddza-uc.a.run.app/uploadfile/ ";
+    const post_url = "https://detection-image-2-vdaepgddza-uc.a.run.app/uploadfile/ ";
 
     // FormDataオブジェクトに追加
     const formData = new FormData();
@@ -46,6 +45,7 @@ const ImgStoreBtn = ({ inputFiles, setStoredResult, setErrorMessage }) => {
         },
       })
       .then(function (response) {
+        console.log(response) // ----------------------コールドスリープテストーーーーーーーーーーーーーーーー
         setStoredResult(response);
         setInitState(false); // 送信中非表示
       })
