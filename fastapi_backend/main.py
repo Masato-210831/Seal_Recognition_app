@@ -7,7 +7,6 @@ from my_utils.functions import run, imgarrtobyte, img_save
 from os.path import basename
 import onnxruntime as ort
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 
 app = FastAPI()
 
@@ -127,4 +126,10 @@ def predict():
 
 
     return JSONResponse(content=response)
+
+
+# ヘルスチェックのエンドポイント
+@app.get("/health")
+def health_check():
+    return {"status":"OK"}
 
