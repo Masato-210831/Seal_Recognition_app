@@ -9,7 +9,6 @@ import onnxruntime as ort
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-
 app = FastAPI()
 
 # CORS対応
@@ -60,7 +59,6 @@ async def create_upload_file(files: list[UploadFile]):
 # 未押印の物体検知
 #==================
 @app.post("/predict/")
-# 画像フォルダのパス
 def predict():
     # ファイルをアップロードしているかの確認
     if not os.path.exists(imgs_store_path):
@@ -129,22 +127,4 @@ def predict():
 
 
     return JSONResponse(content=response)
-
-
-#=====================================
-# Clound runのコールドスタート問題対策
-#=====================================
-
-# ヘルスチェックのエンドポイント
-@app.get("/health")
-def health_check():
-    return {"status":"OK"}
-
-# uvicronサーバーの立ち上がりを同期的に行う
-if __name__ == "__main__":
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
-    server = uvicorn.Server(config)
-    server.run()
-    
-
 

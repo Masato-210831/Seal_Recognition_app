@@ -32,8 +32,9 @@ const DetectionBtn = ({
 
     // POSTするURL
     // const post_url = "http://127.0.0.1:8000/predict/ ";
-    // const post_url = "https://detection-image-vdaepgddza-uc.a.run.app/predict/ ";
-    const post_url = "https://detection-image-2-vdaepgddza-uc.a.run.app/predict/ ";
+    const post_url = "https://detection-image-vdaepgddza-uc.a.run.app/predict/ ";
+    // const post_url = "https://detection-image-2-vdaepgddza-uc.a.run.app/predict/ ";
+    // const post_url = "http://35.232.161.234:8000/predict/ ";
 
     // 物体検出ののPOST
     axios
